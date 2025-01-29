@@ -1,1 +1,2 @@
-web: python youtube_notifier.py
+web: gunicorn app:app
+worker: python youtube_notifier.py

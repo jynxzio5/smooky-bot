@@ -7,14 +7,9 @@ from bs4 import BeautifulSoup
 from discord_webhook import DiscordWebhook, DiscordEmbed
 import yt_dlp
 from dotenv import load_dotenv
-from flask import Flask, jsonify
-from threading import Thread
 
 # Load environment variables
 load_dotenv()
-
-# Initialize Flask app
-app = Flask(__name__)
 
 class YoutubeNotifier:
     def __init__(self, channel_url):
@@ -122,34 +117,7 @@ class YoutubeNotifier:
                 print(f"Error in main loop: {str(e)}")
                 time.sleep(check_interval)
 
-# Flask routes
-@app.route('/')
-def home():
-    return jsonify({
-        "status": "running",
-        "service": "Smoker Q8 YouTube Notifier",
-        "time": datetime.now().isoformat()
-    })
-
-@app.route('/health')
-def health():
-    return jsonify({
-        "status": "healthy",
-        "last_check": datetime.now().isoformat()
-    }), 200
-
-def run_flask():
-    """Run Flask app"""
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
-
 if __name__ == "__main__":
     CHANNEL_URL = "https://www.youtube.com/@smoker_q8"
-    
-    # Start Flask in a separate thread
-    flask_thread = Thread(target=run_flask)
-    flask_thread.start()
-    
-    # Start the notifier
     notifier = YoutubeNotifier(CHANNEL_URL)
     notifier.run()
